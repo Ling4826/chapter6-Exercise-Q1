@@ -7,13 +7,15 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.StackPane;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 
 import static se233.chapter1.HelloApplication.*;
 
 // Imports are omitted
 public class AllCustomHandler {
+    private static final Logger logger = LogManager.getLogger(AllCustomHandler.class);
     public static class GenCharacterHandler implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent event) {
@@ -64,11 +66,9 @@ public class AllCustomHandler {
 
                 // 3. เปรียบเทียบ type (และเผื่อกรณีตัวละครเป็น type "All" ที่ใส่ได้ทุกอย่าง)
                 if (characterType == weaponType || characterType == DamageType.All) {
-                    // สวมใส่สำเร็จ: ทำแค่สิ่งที่เกี่ยวกับการสวมใส่
                     setEquippedWeapon(weapon);
                     character.equipWeapon(weapon);
                     addItemToList(weapon);
-
                 } else {
                     event.setDropCompleted(false);
                     return;
@@ -79,10 +79,9 @@ public class AllCustomHandler {
                 Armor armor = (Armor) retrievedEquipment;
                 DamageType characterType = character.getType();
                 if (characterType != DamageType.All) {
-                    // สวมใส่สำเร็จ: ทำแค่สิ่งที่เกี่ยวกับการสวมใส่
                     setEquippedArmor(armor);
                     character.equipArmor(armor);
-                    addItemToList(armor);
+                     addItemToList(armor);
                 } else {
                     event.setDropCompleted(false);
                     return;
@@ -90,7 +89,7 @@ public class AllCustomHandler {
             }
             setMainCharacter(character);
             refreshPane();
-
+            logger.info("Equipped item: {}", retrievedEquipment.getName());
             // 2. อัปเดตหน้าจอ (UI)
             if (imgGroup.getChildren().size() != 1) {
                 imgGroup.getChildren().remove(1); // ลบรูปไอเท็มเก่าออก
@@ -102,7 +101,6 @@ public class AllCustomHandler {
             imgGroup.getChildren().add(imgView); // เพิ่มรูปไอเท็มใหม่เข้าไป
 
             dragCompleted = true;
-            System.out.println(dragCompleted);
         }
         event.setDropCompleted(dragCompleted); // 3. แจ้งระบบว่าการวางสำเร็จแล้ว
     }
